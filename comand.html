@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>DC_ROOT — В команду</title>
+  <style>
+    :root {
+      --bg: #03000a;
+      --surface: rgba(15, 10, 35, 0.65);
+      --border: rgba(180, 130, 255, 0.25);
+      --primary: #b47aff;
+      --secondary: #ff3b6f;
+      --accent: #00e5ff;
+      --text: #f0eaff;
+      --muted: #9a8abf;
+      --radius: 22px;
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      font-family: var(--font);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    canvas#particles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 20px 16px 100px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0 24px;
+      position: sticky;
+      top: 0;
+      background: rgba(3,0,10,0.8);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-size: 1.7rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 8px rgba(180,130,255,0.4));
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-left: 16px;
+      transition: 0.3s;
+      text-transform: uppercase;
+    }
+    .nav-links a:active {
+      color: var(--secondary);
+      text-shadow: 0 0 8px var(--secondary);
+    }
+
+    .page-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin: 16px 0 8px;
+      text-transform: uppercase;
+      background: linear-gradient(to right, #fff, #ffb3c6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 12px rgba(255,59,111,0.5));
+      animation: glitchText 4s infinite;
+    }
+    @keyframes glitchText {
+      0%, 100% { text-shadow: 0 0 10px rgba(255,59,111,0.5), 0 0 20px rgba(180,130,255,0.3); }
+      5% { text-shadow: -2px 0 red, 2px 0 cyan; }
+      8% { text-shadow: 2px 0 red, -2px 0 cyan; }
+      10% { text-shadow: 0 0 10px rgba(255,59,111,0.5), 0 0 20px rgba(180,130,255,0.3); }
+    }
+    .page-subtitle {
+      color: var(--muted);
+      margin-bottom: 28px;
+      font-size: 0.95rem;
+      border-left: 4px solid var(--secondary);
+      padding-left: 14px;
+      background: linear-gradient(90deg, rgba(255,59,111,0.15), transparent);
+      backdrop-filter: blur(5px);
+    }
+
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 22px;
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 0 40px rgba(255,59,111,0.03);
+      animation: fadeUp 0.8s ease 0.2s both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.8rem;
+      margin-bottom: 7px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(10,10,25,0.7);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(255,59,111,0.2);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+    .form-group select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A8AA0' fill='none' stroke-width='2'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+    .form-group select option {
+      background: #101025;
+      color: #fff;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--secondary), #c0244c);
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(255,59,111,0.4);
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255,59,111,0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(255,59,111,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,59,111,0); }
+    }
+    .btn-submit:active {
+      transform: scale(0.96);
+      box-shadow: 0 4px 15px rgba(255,59,111,0.9);
+    }
+
+    .success-msg {
+      text-align: center;
+      padding: 30px;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: none;
+      animation: fadeUp 0.5s ease;
+    }
+    .success-msg .icon { font-size: 3rem; display: block; margin-bottom: 12px; }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-around;
+      background: rgba(5,0,15,0.9);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-top: 1px solid var(--border);
+      padding: 10px 0 20px;
+      z-index: 20;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .bottom-nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.65rem;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: 0.3s;
+      text-transform: uppercase;
+    }
+    .bottom-nav a.active {
+      color: var(--secondary);
+      text-shadow: 0 0 12px var(--secondary);
+    }
+    .bottom-nav a .icon {
+      font-size: 1.4rem;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+  <div class="container">
+    <nav class="nav">
+      <div class="logo">DC_ROOT</div>
+      <div class="nav-links">
+        <a href="index.html">Главная</a>
+        <a href="product.html">Услуги</a>
+        <a href="zakaz.html">Заказ</a>
+      </div>
+    </nav>
+
+    <h1 class="page-title">В команду</h1>
+    <p class="page-subtitle">Ты пишешь код, который не должен видеть свет? Мы ищем именно тебя.</p>
+
+    <div class="form-card" id="teamForm">
+      <div class="form-group">
+        <label>Твой ник в Telegram</label>
+        <input type="text" id="tgNick" placeholder="@username" required>
+      </div>
+      <div class="form-group">
+        <label>Специализация</label>
+        <select id="specialty" required>
+          <option value="" disabled selected>— Что ты умеешь? —</option>
+          <option>Python / Backend</option>
+          <option>JavaScript / Frontend</option>
+          <option>Telegram Bot API (Aiogram / Telethon)</option>
+          <option>Парсинг (Scrapy, Selenium, Requests)</option>
+          <option>DevOps / VPS / Docker</option>
+          <option>Дизайн (Figma, UI/UX)</option>
+          <option>Reverse Engineering</option>
+          <option>Другое</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Опиши свои навыки и опыт (можно ссылки)</label>
+        <textarea id="skills" placeholder="Какие проекты ты уже делал? Что умеешь лучше всего? Если есть GitHub / портфолио — кинь сюда. Мы не осуждаем." required></textarea>
+      </div>
+      <div class="form-group">
+        <label>Готов работать анонимно и без лишних вопросов?</label>
+        <select id="anon" required>
+          <option value="" disabled selected>— Выбери —</option>
+          <option>Да, полностью анонимно</option>
+          <option>Готов обсуждать детали</option>
+        </select>
+      </div>
+      <button class="btn-submit" onclick="handleTeamSubmit()">Оставить заявку</button>
+    </div>
+
+    <div class="success-msg" id="successMsg">
+      <span class="icon">🔥</span>
+      Твоя заявка ушла в зашифрованный канал.<br>Если ты нам подходишь — мы сами выйдем на связь.<br>Жди сигнала.
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="index.html"><span class="icon">🏠</span> Главная</a>
+    <a href="product.html"><span class="icon">📦</span> Услуги</a>
+    <a href="zakaz.html"><span class="icon">✍️</span> Заказ</a>
+    <a href="comand.html" class="active"><span class="icon">👥</span> Команда</a>
+  </div>
+
+  <script>
+    (function() {
+      const canvas = document.getElementById('particles');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      const resize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      };
+      window.addEventListener('resize', resize);
+      resize();
+
+      class Particle {
+        constructor() {
+          this.reset();
+        }
+        reset() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 2 + 0.5;
+          this.speedX = (Math.random() - 0.5) * 0.4;
+          this.speedY = (Math.random() - 0.5) * 0.4;
+          this.opacity = Math.random() * 0.5 + 0.2;
+        }
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          if (this.x < 0 || this.x > canvas.width ||
+              this.y < 0 || this.y > canvas.height) {
+            this.reset();
+          }
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 59, 111, ${this.opacity})`;
+          ctx.fill();
+        }
+      }
+
+      for (let i = 0; i < 70; i++) {
+        particles.push(new Particle());
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    function handleTeamSubmit() {
+      const tg = document.getElementById('tgNick').value.trim();
+      const spec = document.getElementById('specialty').value;
+      const skills = document.getElementById('skills').value.trim();
+      const anon = document.getElementById('anon').value;
+      if (!tg || !spec || !skills || !anon) {
+        alert('Заполни все поля. Мы должны знать, с кем работаем.');
+        return;
+      }
+      document.getElementById('teamForm').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+      console.log({ tg, spec, skills, anon });
+    }
+  </script>
+</body>
+</html>
