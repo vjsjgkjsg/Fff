@@ -7,8 +7,8 @@
   <style>
     :root {
       --bg: #03000a;
-      --surface: rgba(15, 10, 35, 0.65);
-      --border: rgba(180, 130, 255, 0.25);
+      --surface: rgba(15, 10, 35, 0.7);
+      --border: rgba(180, 130, 255, 0.3);
       --primary: #b47aff;
       --secondary: #ff3b6f;
       --accent: #00e5ff;
@@ -25,13 +25,26 @@
       color: var(--text);
       min-height: 100vh;
       overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 20% 20%, rgba(255,59,111,0.05) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(0,229,255,0.05) 0%, transparent 40%);
     }
-    canvas#particles {
+    /* Анимированная сетка на фоне */
+    .grid-bg {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      z-index: 0;
       pointer-events: none;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: gridMove 20s linear infinite;
+    }
+    @keyframes gridMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 40px 40px; }
     }
 
     .container {
@@ -42,98 +55,72 @@
       z-index: 1;
     }
 
-    .nav {
+    /* Шапка */
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 0 24px;
+      padding: 12px 0 18px;
       position: sticky;
       top: 0;
-      background: rgba(3,0,10,0.8);
+      background: rgba(3,0,10,0.85);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
-      z-index: 10;
+      z-index: 20;
       border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
     }
     .logo {
       font-size: 1.7rem;
       font-weight: 900;
-      letter-spacing: -1px;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
       filter: drop-shadow(0 0 8px rgba(180,130,255,0.4));
+      animation: logoPulse 3s infinite;
+    }
+    @keyframes logoPulse {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(180,130,255,0.4)); }
+      50% { filter: drop-shadow(0 0 16px rgba(255,59,111,0.8)); }
     }
     .nav-links a {
       color: var(--muted);
       text-decoration: none;
       font-weight: 700;
-      font-size: 0.9rem;
-      margin-left: 20px;
-      transition: all 0.3s;
+      font-size: 0.85rem;
+      margin-left: 16px;
+      transition: 0.3s;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .nav-links a:active {
-      color: var(--secondary);
-      text-shadow: 0 0 8px var(--secondary);
     }
 
-    .page-title {
-      font-size: 2.2rem;
-      font-weight: 900;
-      margin: 16px 0 8px;
-      text-transform: uppercase;
-      background: linear-gradient(to right, #fff, #ffb3c6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      filter: drop-shadow(0 0 12px rgba(255,59,111,0.5));
-      animation: glitchText 3s infinite;
-    }
-    @keyframes glitchText {
-      0%, 100% { text-shadow: 0 0 10px rgba(255,59,111,0.5), 0 0 20px rgba(180,130,255,0.3); }
-      5% { text-shadow: -2px 0 red, 2px 0 cyan; }
-      8% { text-shadow: 2px 0 red, -2px 0 cyan; }
-      10% { text-shadow: 0 0 10px rgba(255,59,111,0.5), 0 0 20px rgba(180,130,255,0.3); }
-    }
-    .page-subtitle {
-      color: var(--muted);
-      margin-bottom: 32px;
-      font-size: 0.95rem;
-      font-style: italic;
-      border-left: 4px solid var(--secondary);
-      padding-left: 14px;
-      background: linear-gradient(90deg, rgba(255,59,111,0.15), transparent);
-      backdrop-filter: blur(5px);
-      border-radius: 0 8px 8px 0;
+    /* Секция услуг — сетка 2x3 */
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      perspective: 1000px;
     }
 
-    /* Карточки */
+    /* Карточка с 3D-эффектом */
     .flip-card {
-      perspective: 1200px;
-      margin-bottom: 20px;
-      animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      height: 280px; /* компактно, но с запасом для переворота */
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s ease;
     }
-    .flip-card:nth-child(1) { animation-delay: 0.15s; }
-    .flip-card:nth-child(2) { animation-delay: 0.25s; }
-    .flip-card:nth-child(3) { animation-delay: 0.35s; }
-    .flip-card:nth-child(4) { animation-delay: 0.45s; }
-    .flip-card:nth-child(5) { animation-delay: 0.55s; }
-    .flip-card:nth-child(6) { animation-delay: 0.65s; }
-    .flip-card:nth-child(7) { animation-delay: 0.75s; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px) scale(0.96); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
     .flip-card-inner {
       position: relative;
       width: 100%;
-      height: 240px;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      height: 100%;
+      text-align: center;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       transform-style: preserve-3d;
+      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      box-shadow: var(--card-glow), inset 0 0 30px rgba(255,59,111,0.03);
     }
     .flip-card.flipped .flip-card-inner {
       transform: rotateY(180deg);
@@ -142,106 +129,119 @@
     .flip-card-front,
     .flip-card-back {
       position: absolute;
-      inset: 0;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
       border-radius: var(--radius);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      box-shadow: var(--card-glow), inset 0 0 30px rgba(255,59,111,0.05);
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      padding: 24px 22px;
-      text-align: center;
-      transition: box-shadow 0.3s;
+      justify-content: center;
+      padding: 18px 12px;
     }
     .flip-card-front {
-      border-top: 2px solid rgba(255,59,111,0.5);
-      border-bottom: 2px solid rgba(180,130,255,0.4);
+      /* лицевая сторона */
+      background: radial-gradient(circle at 50% 0%, rgba(180,130,255,0.1), transparent 60%);
     }
     .flip-card-back {
+      /* оборотная сторона */
+      background: radial-gradient(circle at 50% 100%, rgba(255,59,111,0.1), transparent 60%);
       transform: rotateY(180deg);
       justify-content: space-between;
       text-align: left;
-      align-items: stretch;
       overflow-y: auto;
-      border-top: 2px solid var(--accent);
-      border-bottom: 2px solid var(--secondary);
     }
 
+    .service-icon {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 0 8px currentColor);
+    }
     .flip-card-front h3 {
-      font-size: 1.4rem;
-      font-weight: 800;
-      margin-bottom: 14px;
-      line-height: 1.3;
-      background: linear-gradient(to bottom, #ffe6f0, #ff6688);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      background: linear-gradient(to right, #fff, #ffb3c6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 0 15px rgba(255,0,100,0.6);
-      letter-spacing: -0.5px;
     }
-    .btn-toggle {
-      padding: 12px 28px;
+    .flip-card-front .short-desc {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .btn-flip {
+      padding: 6px 18px;
+      border: 1px solid var(--secondary);
       background: transparent;
-      border: 1.5px solid var(--secondary);
       color: var(--secondary);
-      border-radius: 50px;
-      font-weight: 800;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.25s;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      transition: 0.3s;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 12px rgba(255,59,111,0.3);
-      animation: pulseBtn 2s infinite;
     }
-    @keyframes pulseBtn {
-      0% { box-shadow: 0 0 8px rgba(255,59,111,0.3); }
-      50% { box-shadow: 0 0 25px rgba(255,59,111,0.7); }
-      100% { box-shadow: 0 0 8px rgba(255,59,111,0.3); }
-    }
-    .btn-toggle:active {
-      background: rgba(255,59,111,0.2);
-      transform: scale(0.95);
-      box-shadow: 0 0 30px rgba(255,59,111,0.9);
+    .btn-flip:hover {
+      background: rgba(255,59,111,0.15);
+      box-shadow: 0 0 15px rgba(255,59,111,0.4);
     }
 
     .flip-card-back .back-content {
+      width: 100%;
       height: 100%;
       display: flex;
       flex-direction: column;
+      padding: 4px 0;
     }
     .flip-card-back .back-content p {
-      font-size: 0.9rem;
+      font-size: 0.75rem;
       color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 16px;
+      line-height: 1.5;
+      margin-bottom: 10px;
       flex: 1;
+    }
+    .price-tag {
+      display: inline-block;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 50px;
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      align-self: flex-start;
+      margin-bottom: 10px;
     }
     .btn-back {
       align-self: flex-end;
-      padding: 8px 22px;
-      background: rgba(180,130,255,0.15);
+      padding: 5px 15px;
       border: 1px solid var(--border);
+      background: rgba(180,130,255,0.1);
       color: var(--text);
-      border-radius: 50px;
-      font-weight: 700;
-      font-size: 0.8rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.7rem;
       cursor: pointer;
-      transition: all 0.2s;
-      text-transform: uppercase;
+      transition: 0.3s;
     }
-    .btn-back:active {
-      background: rgba(180,130,255,0.35);
-      border-color: var(--primary);
+    .btn-back:hover {
+      background: rgba(180,130,255,0.2);
     }
 
-    /* Нижняя навигация */
+    /* Анимация появления */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .flip-card:nth-child(1) { animation: fadeUp 0.5s 0.1s both; }
+    .flip-card:nth-child(2) { animation: fadeUp 0.5s 0.2s both; }
+    .flip-card:nth-child(3) { animation: fadeUp 0.5s 0.3s both; }
+    .flip-card:nth-child(4) { animation: fadeUp 0.5s 0.4s both; }
+    .flip-card:nth-child(5) { animation: fadeUp 0.5s 0.5s both; }
+    .flip-card:nth-child(6) { animation: fadeUp 0.5s 0.6s both; }
+
+    /* Нижняя панель */
     .bottom-nav {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -259,7 +259,7 @@
     .bottom-nav a {
       text-decoration: none;
       color: var(--muted);
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 700;
       display: flex;
       flex-direction: column;
@@ -272,202 +272,163 @@
       color: var(--secondary);
       text-shadow: 0 0 12px var(--secondary);
     }
-    .bottom-nav a .icon {
-      font-size: 1.4rem;
+    .bottom-nav a.active::after {
+      content: '';
+      position: absolute;
+      top: -6px;
+      width: 20px;
+      height: 3px;
+      background: var(--secondary);
+      border-radius: 2px;
     }
+    .bottom-nav a .icon { font-size: 1.3rem; }
   </style>
 </head>
 <body>
-  <canvas id="particles"></canvas>
+  <div class="grid-bg"></div>
+
   <div class="container">
-    <nav class="nav">
-      <div class="logo">DC_ROOT</div>
+    <!-- Шапка -->
+    <header class="header">
+      <span class="logo">DC_ROOT</span>
       <div class="nav-links">
         <a href="index.html">Главная</a>
         <a href="zakaz.html">Заказ</a>
+        <a href="comand.html">Команда</a>
       </div>
-    </nav>
+    </header>
 
-    <h1 class="page-title">НАШИ УСЛУГИ</h1>
-    <p class="page-subtitle">Мы не спрашиваем, зачем тебе это. Мы просто делаем. Никаких табу.</p>
-
-    <!-- Карточка 1 -->
-    <div class="flip-card" id="card1">
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <h3>🤖 Разработка Telegram-ботов</h3>
-          <button class="btn-toggle" onclick="flipCard('card1')">Вскрыть инфу</button>
-        </div>
-        <div class="flip-card-back">
-          <div class="back-content">
-            <p>Кодим ботов под любые схемы: от фейковых магазинов до автоматических обнальщиков. Бот-сети для накрутки, спама, фишинга. Анонимность и защита от блокировок — в комплекте.</p>
-            <button class="btn-back" onclick="flipCard('card1')">← Закрыть</button>
+    <!-- Услуги -->
+    <div class="services-grid">
+      <!-- Карточка 1 -->
+      <div class="flip-card" id="card1">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <span class="service-icon">🤖</span>
+            <h3>Разработка Telegram-ботов</h3>
+            <p class="short-desc">От фейковых магазинов до обнала</p>
+            <button class="btn-flip" onclick="flip('card1')">Подробнее</button>
+          </div>
+          <div class="flip-card-back">
+            <div class="back-content">
+              <p>• Автоматизация бизнеса<br>• Приём заявок и заказов<br>• Интернет-магазины<br>• Платёжные системы<br>• Личные кабинеты с подписками<br>• Интеграция с любыми API</p>
+              <span class="price-tag">от $900</span>
+              <button class="btn-back" onclick="flip('card1')">← Назад</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Карточка 2 -->
-    <div class="flip-card" id="card2">
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <h3>🌐 Создание сайтов</h3>
-          <button class="btn-toggle" onclick="flipCard('card2')">Вскрыть инфу</button>
-        </div>
-        <div class="flip-card-back">
-          <div class="back-content">
-            <p>Скам-проекты под ключ: от однодневок до неубиваемых порталов. Обход антифрода, анонимная регистрация, скрытые платёжные шлюзы. Твой сайт — твои правила.</p>
-            <button class="btn-back" onclick="flipCard('card2')">← Закрыть</button>
+      <!-- Карточка 2 -->
+      <div class="flip-card" id="card2">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <span class="service-icon">🌐</span>
+            <h3>Создание сайтов</h3>
+            <p class="short-desc">Современные, адаптивные, быстрые</p>
+            <button class="btn-flip" onclick="flip('card2')">Подробнее</button>
+          </div>
+          <div class="flip-card-back">
+            <div class="back-content">
+              <p>• Корпоративные сайты<br>• Интернет-магазины<br>• Каталоги услуг<br>• Порталы и веб-сервисы<br>• Визитки компаний</p>
+              <span class="price-tag">от $500</span>
+              <button class="btn-back" onclick="flip('card2')">← Назад</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Карточка 3 -->
-    <div class="flip-card" id="card3">
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <h3>📄 Лендинги</h3>
-          <button class="btn-toggle" onclick="flipCard('card3')">Вскрыть инфу</button>
-        </div>
-        <div class="flip-card-back">
-          <div class="back-content">
-            <p>Продающие страницы, выжимающие бабки из жадности и страха. Идеально для инфоцыган, фейковых курсов, сбора предоплат. Конверсия выше крыши.</p>
-            <button class="btn-back" onclick="flipCard('card3')">← Закрыть</button>
+      <!-- Карточка 3 -->
+      <div class="flip-card" id="card3">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <span class="service-icon">📄</span>
+            <h3>Landing Page</h3>
+            <p class="short-desc">Продающие страницы с конверсией 14%</p>
+            <button class="btn-flip" onclick="flip('card3')">Подробнее</button>
+          </div>
+          <div class="flip-card-back">
+            <div class="back-content">
+              <p>• Продажа товаров и услуг<br>• Рекламные кампании<br>• Сбор заявок и лидов<br>• Презентация проектов</p>
+              <span class="price-tag">от $500</span>
+              <button class="btn-back" onclick="flip('card3')">← Назад</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Карточка 4 -->
-    <div class="flip-card" id="card4">
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <h3>📊 Парсинг / пробив</h3>
-          <button class="btn-toggle" onclick="flipCard('card4')">Вскрыть инфу</button>
-        </div>
-        <div class="flip-card-back">
-          <div class="back-content">
-            <p>Сливаем любые открытые данные: контакты, переписки, аудитории. Пробив по нику/номеру/почте. Готовые скрипты или индивидуальный инструмент.</p>
-            <button class="btn-back" onclick="flipCard('card4')">← Закрыть</button>
+      <!-- Карточка 4 -->
+      <div class="flip-card" id="card4">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <span class="service-icon">📊</span>
+            <h3>Парсинг данных</h3>
+            <p class="short-desc">Сбор аудитории, пробив, базы</p>
+            <button class="btn-flip" onclick="flip('card4')">Подробнее</button>
+          </div>
+          <div class="flip-card-back">
+            <div class="back-content">
+              <p>• Сбор открытых контактов<br>• Анализ целевой аудитории<br>• Формирование баз данных<br>• Индивидуальные парсеры</p>
+              <span class="price-tag">от $300</span>
+              <button class="btn-back" onclick="flip('card4')">← Назад</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Карточка 5 -->
-    <div class="flip-card" id="card5">
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <h3>📨 Массовые рассылки</h3>
-          <button class="btn-toggle" onclick="flipCard('card5')">Вскрыть инфу</button>
-        </div>
-        <div class="flip-card-back">
-          <div class="back-content">
-            <p>Спам-машины без лимитов. Инвайты, постинг в сотни чатов, авто-фермы аккаунтов. Работаем даже с запрещёнными методами.</p>
-            <button class="btn-back" onclick="flipCard('card5')">← Закрыть</button>
+      <!-- Карточка 5 -->
+      <div class="flip-card" id="card5">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <span class="service-icon">📨</span>
+            <h3>Автоматизация рассылок</h3>
+            <p class="short-desc">Спам-машины, инвайты, автопостинг</p>
+            <button class="btn-flip" onclick="flip('card5')">Подробнее</button>
+          </div>
+          <div class="flip-card-back">
+            <div class="back-content">
+              <p>• Настройка сценариев рассылок<br>• Работа с группами и чатами<br>• Гибкая фильтрация<br>• Полная автоматизация</p>
+              <span class="price-tag">от $400</span>
+              <button class="btn-back" onclick="flip('card5')">← Назад</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Карточка 6 -->
-    <div class="flip-card" id="card6">
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <h3>📋 Клонирование групп</h3>
-          <button class="btn-toggle" onclick="flipCard('card6')">Вскрыть инфу</button>
-        </div>
-        <div class="flip-card-back">
-          <div class="back-content">
-            <p>Полная копия чужих каналов в реальном времени. Воровство контента, слежка, зеркала. Никто не заметит подмены.</p>
-            <button class="btn-back" onclick="flipCard('card6')">← Закрыть</button>
+      <!-- Карточка 6 -->
+      <div class="flip-card" id="card6">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <span class="service-icon">📑</span>
+            <h3>Генерация документов</h3>
+            <p class="short-desc">PDF, справки, сертификаты</p>
+            <button class="btn-flip" onclick="flip('card6')">Подробнее</button>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Карточка 7 -->
-    <div class="flip-card" id="card7">
-      <div class="flip-card-inner">
-        <div class="flip-card-front">
-          <h3>📑 Генерация документов</h3>
-          <button class="btn-toggle" onclick="flipCard('card7')">Вскрыть инфу</button>
-        </div>
-        <div class="flip-card-back">
-          <div class="back-content">
-            <p>Любые справки, сертификаты, выписки, счета. Подделка? Мы называем это «помощь с бумагами». Абсолютная конфиденциальность.</p>
-            <button class="btn-back" onclick="flipCard('card7')">← Закрыть</button>
+          <div class="flip-card-back">
+            <div class="back-content">
+              <p>• Генерация PDF-документов<br>• Автозаполнение данных<br>• Редактирование шаблонов<br>• Отчёты, справки, бланки</p>
+              <span class="price-tag">от $350</span>
+              <button class="btn-back" onclick="flip('card6')">← Назад</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Нижняя панель -->
   <div class="bottom-nav">
     <a href="index.html"><span class="icon">🏠</span> Главная</a>
     <a href="product.html" class="active"><span class="icon">📦</span> Услуги</a>
     <a href="zakaz.html"><span class="icon">✍️</span> Заказ</a>
+    <a href="comand.html"><span class="icon">👥</span> Команда</a>
   </div>
 
   <script>
-    // Частицы фона
-    (function() {
-      const canvas = document.getElementById('particles');
-      const ctx = canvas.getContext('2d');
-      let particles = [];
-      const resize = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      };
-      window.addEventListener('resize', resize);
-      resize();
-
-      class Particle {
-        constructor() {
-          this.reset();
-        }
-        reset() {
-          this.x = Math.random() * canvas.width;
-          this.y = Math.random() * canvas.height;
-          this.size = Math.random() * 2 + 0.5;
-          this.speedX = (Math.random() - 0.5) * 0.4;
-          this.speedY = (Math.random() - 0.5) * 0.4;
-          this.opacity = Math.random() * 0.5 + 0.2;
-        }
-        update() {
-          this.x += this.speedX;
-          this.y += this.speedY;
-          if (this.x < 0 || this.x > canvas.width ||
-              this.y < 0 || this.y > canvas.height) {
-            this.reset();
-          }
-        }
-        draw() {
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(180, 130, 255, ${this.opacity})`;
-          ctx.fill();
-        }
-      }
-
-      for (let i = 0; i < 80; i++) {
-        particles.push(new Particle());
-      }
-
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-          p.update();
-          p.draw();
-        });
-        requestAnimationFrame(animate);
-      }
-      animate();
-    })();
-
-    function flipCard(id) {
-      document.getElementById(id).classList.toggle('flipped');
+    // Переворот карточки
+    function flip(cardId) {
+      const card = document.getElementById(cardId);
+      card.classList.toggle('flipped');
     }
   </script>
 </body>
