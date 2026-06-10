@@ -148,7 +148,7 @@
       box-shadow: 0 0 15px rgba(255,59,111,0.7);
     }
 
-    /* О нас — основной блок */
+    /* О нас */
     .about-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -252,7 +252,105 @@
     }
     .stars { color: #FFD700; font-size: 0.85rem; margin-top: 4px; }
 
-    /* Нижняя навигация — 4 кнопки */
+    /* Блок "Наши реальные работы" */
+    .works-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      animation: fadeUp 0.8s ease 0.5s both;
+    }
+    .work-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 14px;
+      backdrop-filter: blur(20px);
+      text-align: left;
+      box-shadow: var(--card-glow);
+      transition: 0.3s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .work-card:active {
+      transform: scale(0.97);
+      border-color: var(--accent);
+    }
+    .work-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--secondary);
+      box-shadow: 0 0 10px var(--secondary);
+    }
+    .work-card h4 {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-weight: 700;
+    }
+    .work-card p {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .price-tag {
+      display: inline-block;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 50px;
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      align-self: flex-start;
+    }
+
+    /* Блок "Другие разделы" */
+    .sections-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      animation: fadeUp 0.8s ease 0.6s both;
+    }
+    .section-link-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 16px;
+      backdrop-filter: blur(20px);
+      text-align: center;
+      color: var(--text);
+      text-decoration: none;
+      transition: 0.3s;
+      box-shadow: var(--card-glow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-link-card:active {
+      transform: scale(0.96);
+      border-color: var(--primary);
+    }
+    .section-link-card .icon {
+      font-size: 2.2rem;
+    }
+    .section-link-card h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .section-link-card p {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* Нижняя навигация (4 кнопки) */
     .bottom-nav {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -351,6 +449,31 @@
       </div>
     </div>
 
+    <!-- Наши реальные работы -->
+    <div class="section-title">Наши реальные работы</div>
+    <div class="works-grid">
+      <div class="work-card">
+        <h4>🤖 Парсер контактов TG</h4>
+        <p>Сбор активной аудитории из чатов, фильтрация, экспорт в CSV. Окупился за 3 дня.</p>
+        <span class="price-tag">$800</span>
+      </div>
+      <div class="work-card">
+        <h4>📄 Лендинг под инфокурс</h4>
+        <p>Одностраничник с конверсией 14%, встроенная оплата, таймеры. Принёс клиенту $22к.</p>
+        <span class="price-tag">$1,200</span>
+      </div>
+      <div class="work-card">
+        <h4>💳 Бот-обнальщик</h4>
+        <p>Автоматический приём платежей на левые карты, распределение, вывод. Ни одной блокировки.</p>
+        <span class="price-tag">$2,500</span>
+      </div>
+      <div class="work-card">
+        <h4>📋 Клон канала</h4>
+        <p>Точная копия чужого канала с автосинхронизацией. Работает до сих пор.</p>
+        <span class="price-tag">$600</span>
+      </div>
+    </div>
+
     <!-- Отзывы -->
     <div class="section-title">Отзывы</div>
     <div class="reviews">
@@ -379,9 +502,34 @@
         </div>
       </div>
     </div>
+
+    <!-- Другие разделы (будущие) -->
+    <div class="section-title">Разделы</div>
+    <div class="sections-grid">
+      <a href="profile.html" class="section-link-card">
+        <span class="icon">👤</span>
+        <h4>Профиль</h4>
+        <p>Личный кабинет и история заказов</p>
+      </a>
+      <a href="partners.html" class="section-link-card">
+        <span class="icon">🤝</span>
+        <h4>Услуги партнёров</h4>
+        <p>Проверенные исполнители</p>
+      </a>
+      <a href="verified.html" class="section-link-card">
+        <span class="icon">✅</span>
+        <h4>Проверенные сервисы</h4>
+        <p>Инструменты, которые мы одобряем</p>
+      </a>
+      <a href="future.html" class="section-link-card">
+        <span class="icon">🧩</span>
+        <h4>Ещё...</h4>
+        <p>Новые возможности скоро</p>
+      </a>
+    </div>
   </div>
 
-  <!-- Нижняя навигация с 4 кнопками -->
+  <!-- Нижняя навигация -->
   <div class="bottom-nav">
     <a href="index.html" class="active"><span class="icon">🏠</span> Главная</a>
     <a href="product.html"><span class="icon">📦</span> Услуги</a>
