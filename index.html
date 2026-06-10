@@ -176,18 +176,18 @@
       font-weight: 700;
     }
 
-    /* Сетка преимуществ */
+    /* Преимущества (2x3 сетка) */
     .advantages-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
       animation: fadeUp 0.8s ease 0.3s both;
     }
     .adv-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 20px 14px;
+      padding: 16px 8px;
       backdrop-filter: blur(20px);
       text-align: center;
       transition: all 0.3s;
@@ -198,17 +198,84 @@
       border-color: var(--secondary);
     }
     .adv-icon {
-      font-size: 2rem;
-      margin-bottom: 8px;
+      font-size: 1.8rem;
+      margin-bottom: 6px;
     }
     .adv-card h4 {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       margin-bottom: 4px;
       color: var(--text);
+      font-weight: 700;
     }
     .adv-card p {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--muted);
+    }
+
+    /* Блок "Наши реальные работы" — горизонтальная карусель */
+    .works-scroll {
+      display: flex;
+      overflow-x: auto;
+      gap: 14px;
+      padding-bottom: 8px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      animation: fadeUp 0.8s ease 0.5s both;
+    }
+    .works-scroll::-webkit-scrollbar {
+      height: 4px;
+      background: transparent;
+    }
+    .works-scroll::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+    }
+    .work-card {
+      flex: 0 0 75%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      backdrop-filter: blur(20px);
+      box-shadow: var(--card-glow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      scroll-snap-align: start;
+    }
+    .work-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--secondary);
+      box-shadow: 0 0 10px var(--secondary);
+    }
+    .work-card h4 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-weight: 700;
+    }
+    .work-card p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .price-tag {
+      display: inline-block;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 50px;
+      padding: 5px 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      align-self: flex-start;
     }
 
     /* Отзывы */
@@ -216,7 +283,7 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      animation: fadeUp 0.8s ease 0.4s both;
+      animation: fadeUp 0.8s ease 0.6s both;
     }
     .review-card {
       background: var(--surface);
@@ -252,77 +319,29 @@
     }
     .stars { color: #FFD700; font-size: 0.85rem; margin-top: 4px; }
 
-    /* Блок "Наши реальные работы" */
-    .works-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      animation: fadeUp 0.8s ease 0.5s both;
-    }
-    .work-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px 14px;
-      backdrop-filter: blur(20px);
-      text-align: left;
-      box-shadow: var(--card-glow);
-      transition: 0.3s;
+    /* Разделы (горизонтальная карусель) */
+    .sections-scroll {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
+      overflow-x: auto;
+      gap: 14px;
+      padding-bottom: 8px;
+      scroll-snap-type: x mandatory;
+      animation: fadeUp 0.8s ease 0.7s both;
     }
-    .work-card:active {
-      transform: scale(0.97);
-      border-color: var(--accent);
+    .sections-scroll::-webkit-scrollbar {
+      height: 4px;
+      background: transparent;
     }
-    .work-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 4px;
-      height: 100%;
-      background: var(--secondary);
-      box-shadow: 0 0 10px var(--secondary);
-    }
-    .work-card h4 {
-      font-size: 0.95rem;
-      margin-bottom: 6px;
-      color: var(--text);
-      font-weight: 700;
-    }
-    .work-card p {
-      font-size: 0.75rem;
-      color: var(--muted);
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
-    .price-tag {
-      display: inline-block;
-      background: rgba(0, 229, 255, 0.1);
-      border: 1px solid rgba(0, 229, 255, 0.3);
-      border-radius: 50px;
-      padding: 4px 12px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--accent);
-      align-self: flex-start;
-    }
-
-    /* Блок "Другие разделы" */
-    .sections-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      animation: fadeUp 0.8s ease 0.6s both;
+    .sections-scroll::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
     }
     .section-link-card {
+      flex: 0 0 55%;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 22px 16px;
+      padding: 24px 18px;
       backdrop-filter: blur(20px);
       text-align: center;
       color: var(--text);
@@ -332,7 +351,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      scroll-snap-align: start;
     }
     .section-link-card:active {
       transform: scale(0.96);
@@ -342,15 +362,15 @@
       font-size: 2.2rem;
     }
     .section-link-card h4 {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-weight: 700;
     }
     .section-link-card p {
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       color: var(--muted);
     }
 
-    /* Нижняя навигация (4 кнопки) */
+    /* Нижняя навигация */
     .bottom-nav {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -420,7 +440,7 @@
       <div class="adv-card">
         <div class="adv-icon">💎</div>
         <h4>Прямая работа</h4>
-        <p>Без посредников и лишних ушей</p>
+        <p>Без посредников</p>
       </div>
       <div class="adv-card">
         <div class="adv-icon">💰</div>
@@ -429,48 +449,58 @@
       </div>
       <div class="adv-card">
         <div class="adv-icon">⚡</div>
-        <h4>Индивидуальный подход</h4>
-        <p>Каждый проект уникален</p>
+        <h4>Индивидуально</h4>
+        <p>Под твою задачу</p>
       </div>
       <div class="adv-card">
         <div class="adv-icon">🛡️</div>
-        <h4>Поддержка после сдачи</h4>
-        <p>Мы не бросаем своих</p>
+        <h4>Поддержка</h4>
+        <p>Не бросаем своих</p>
       </div>
       <div class="adv-card">
         <div class="adv-icon">📞</div>
         <h4>Всегда на связи</h4>
-        <p>24/7 во время работы</p>
+        <p>24/7 в работе</p>
       </div>
       <div class="adv-card">
         <div class="adv-icon">🤝</div>
         <h4>Долгосрочное партнёрство</h4>
-        <p>Ты станешь нашим приоритетом</p>
+        <p>Ты наш приоритет</p>
       </div>
     </div>
 
     <!-- Наши реальные работы -->
     <div class="section-title">Наши реальные работы</div>
-    <div class="works-grid">
+    <div class="works-scroll">
       <div class="work-card">
         <h4>🤖 Парсер контактов TG</h4>
-        <p>Сбор активной аудитории из чатов, фильтрация, экспорт в CSV. Окупился за 3 дня.</p>
-        <span class="price-tag">$800</span>
+        <p>Сбор активной аудитории, фильтрация, экспорт. Окупился за 3 дня.</p>
+        <span class="price-tag">от $300</span>
       </div>
       <div class="work-card">
         <h4>📄 Лендинг под инфокурс</h4>
-        <p>Одностраничник с конверсией 14%, встроенная оплата, таймеры. Принёс клиенту $22к.</p>
-        <span class="price-tag">$1,200</span>
+        <p>Одностраничник с конверсией 14%. Принёс клиенту $22к.</p>
+        <span class="price-tag">от $500</span>
       </div>
       <div class="work-card">
         <h4>💳 Бот-обнальщик</h4>
-        <p>Автоматический приём платежей на левые карты, распределение, вывод. Ни одной блокировки.</p>
-        <span class="price-tag">$2,500</span>
+        <p>Автоприём на левые карты, распределение, вывод. Без блокировок.</p>
+        <span class="price-tag">от $900</span>
       </div>
       <div class="work-card">
         <h4>📋 Клон канала</h4>
-        <p>Точная копия чужого канала с автосинхронизацией. Работает до сих пор.</p>
-        <span class="price-tag">$600</span>
+        <p>Точная копия с автосинхронизацией. Работает до сих пор.</p>
+        <span class="price-tag">от $200</span>
+      </div>
+      <div class="work-card">
+        <h4>📨 Скрипт масс-рассылки</h4>
+        <p>Обход лимитов, инвайты, автоферма аккаунтов. Полный автомат.</p>
+        <span class="price-tag">от $400</span>
+      </div>
+      <div class="work-card">
+        <h4>📑 Генератор PDF</h4>
+        <p>Любые справки, сертификаты, бланки с подстановкой данных.</p>
+        <span class="price-tag">от $350</span>
       </div>
     </div>
 
@@ -503,13 +533,13 @@
       </div>
     </div>
 
-    <!-- Другие разделы (будущие) -->
+    <!-- Другие разделы -->
     <div class="section-title">Разделы</div>
-    <div class="sections-grid">
+    <div class="sections-scroll">
       <a href="profile.html" class="section-link-card">
         <span class="icon">👤</span>
         <h4>Профиль</h4>
-        <p>Личный кабинет и история заказов</p>
+        <p>Личный кабинет, история заказов</p>
       </a>
       <a href="partners.html" class="section-link-card">
         <span class="icon">🤝</span>
