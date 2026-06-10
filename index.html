@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Моё портфолио</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0B2B1D;
+            color: #E0E0E0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Шапка */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(26, 58, 44, 0.9);
+            backdrop-filter: blur(8px);
+            padding: 12px 16px;
+            border-radius: 28px;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #2EE59D;
+        }
+
+        .username {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .user-id {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            font-size: 26px;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        /* Табы */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #0F2D1F;
+            border-radius: 40px;
+            padding: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 10px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #E0E0E0;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #2EE59D;
+            color: #0B2B1D;
+        }
+
+        /* Секции */
+        .section {
+            background: rgba(26, 58, 44, 0.7);
+            border-radius: 24px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #2EE59D;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .about-text {
+            line-height: 1.4;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+        }
+
+        /* Работы */
+        .works-list, .reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .work-item {
+            background: #0F2D1F;
+            padding: 12px;
+            border-radius: 16px;
+            position: relative;
+        }
+
+        .work-title {
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .work-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 8px;
+        }
+
+        .delete-work {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.6);
+            border: none;
+            color: #ff6b6b;
+            font-size: 18px;
+            border-radius: 20px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+        }
+
+        /* Отзывы */
+        .review-item {
+            background: #0F2D1F;
+            padding: 12px;
+            border-radius: 16px;
+        }
+
+        .review-author {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .review-rating {
+            color: #FFD93D;
+            margin-bottom: 6px;
+        }
+
+        .review-text {
+            font-size: 14px;
+        }
+
+        .empty-message {
+            opacity: 0.6;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Кнопки */
+        .add-btn, .edit-btn, .review-btn, .order-btn {
+            background: #2EE59D;
+            color: #0B2B1D;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 40px;
+            font-weight: bold;
+            margin-top: 12px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .review-btn {
+            background: #2A9D8F;
+            margin-top: 8px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Форма заказа */
+        .order-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .order-form input, .order-form textarea, .order-form select {
+            background: #0F2D1F;
+            border: 1px solid #2EE59D;
+            border-radius: 16px;
+            padding: 12px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .order-form label {
+            font-size: 14px;
+            margin-bottom: -8px;
+            margin-top: 4px;
+        }
+
+        /* Попап */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: #1A3A2C;
+            border-radius: 28px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .popup-content h3 {
+            margin-bottom: 16px;
+            color: #2EE59D;
+        }
+
+        .popup-content input, .popup-content textarea {
+            width: 100%;
+            margin-bottom: 12px;
+            background: #0F2D1F;
+            border: 1px solid #2EE59D;
+            border-radius: 12px;
+            padding: 10px;
+            color: white;
+        }
+
+        .popup-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .popup-buttons button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 40px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .popup-submit {
+            background: #2EE59D;
+            color: #0B2B1D;
+        }
+
+        .popup-cancel {
+            background: #555;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Шапка -->
+    <div class="header">
+        <div class="user-info">
+            <img id="avatar" class="avatar" src="default-avatar.png" alt="avatar">
+            <div>
+                <div id="username" class="username">Загрузка...</div>
+                <div id="user-id" class="user-id"></div>
+            </div>
+        </div>
+        <button id="settings-btn" class="settings-btn">⚙️</button>
+    </div>
+
+    <!-- Табы -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="portfolio">📁 Портфолио</button>
+        <button class="tab-btn" data-tab="order">📝 Заказать услугу</button>
+    </div>
+
+    <!-- Вкладка Портфолио -->
+    <div id="portfolio-tab">
+        <!-- Обо мне -->
+        <div class="section">
+            <h2>📌 Обо мне <button id="edit-about-btn" class="edit-btn hidden" style="width: auto; padding: 4px 12px; margin:0;">✏️</button></h2>
+            <div id="about-text" class="about-text">Загрузка...</div>
+        </div>
+
+        <!-- Мои работы -->
+        <div class="section">
+            <h2>🖼 Мои работы <button id="add-work-btn" class="add-btn hidden" style="width: auto; padding: 4px 12px; margin:0;">+</button></h2>
+            <div id="works-list" class="works-list">
+                <div class="empty-message">Пока нет работ.</div>
+            </div>
+        </div>
+
+        <!-- Отзывы -->
+        <div class="section">
+            <h2>⭐ Отзывы <button id="open-review-btn" class="review-btn" style="width: auto; padding: 4px 12px; margin:0;">➕ Оставить отзыв</button></h2>
+            <div id="reviews-list" class="reviews-list">
+                <div class="empty-message">Отзывов пока нет. Будьте первым!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Вкладка Заказ услуги (скрыта по умолчанию) -->
+    <div id="order-tab" class="hidden">
+        <div class="section">
+            <h2>📋 Оформление заявки</h2>
+            <div class="order-form">
+                <input type="text" id="order-name" placeholder="Ваше имя *" required>
+                <input type="text" id="order-contact" placeholder="Telegram / Телефон *" required>
+                <textarea id="order-desc" rows="5" placeholder="Опишите вашу задачу или анамнез... *"></textarea>
+                <label>📎 Прикрепить файл (необязательно)</label>
+                <input type="file" id="order-file" accept="image/*,application/pdf">
+                <button id="submit-order-btn" class="add-btn">📤 Отправить заявку</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand(); // развернуть на весь экран
+
+    let currentUser = null;
+    let ADMIN_ID = 8579730438; // ТВОЙ ID - замени если нужно
+
+    // Получаем данные пользователя
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        currentUser = tg.initDataUnsafe.user;
+        document.getElementById('username').innerText = currentUser.username || currentUser.first_name;
+        document.getElementById('user-id').innerText = `ID: ${currentUser.id}`;
+        if (currentUser.photo_url) {
+            document.getElementById('avatar').src = currentUser.photo_url;
+        }
+        // Показываем админские кнопки
+        if (currentUser.id === ADMIN_ID) {
+            document.getElementById('edit-about-btn').classList.remove('hidden');
+            document.getElementById('add-work-btn').classList.remove('hidden');
+        }
+    } else {
+        document.getElementById('username').innerText = 'Гость';
+    }
+
+    // --- Табы ---
+    const tabs = document.querySelectorAll('.tab-btn');
+    const portfolioTab = document.getElementById('portfolio-tab');
+    const orderTab = document.getElementById('order-tab');
+
+    tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabs.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if (btn.dataset.tab === 'portfolio') {
+                portfolioTab.classList.remove('hidden');
+                orderTab.classList.add('hidden');
+            } else {
+                portfolioTab.classList.add('hidden');
+                orderTab.classList.remove('hidden');
+            }
+        });
+    });
+
+    // --- Загрузка данных из API ---
+    async function loadData() {
+        try {
+            const res = await fetch('/api/get_data?user_id=' + (currentUser?.id || 0));
+            const data = await res.json();
+            if (data.about) document.getElementById('about-text').innerText = data.about;
+            renderWorks(data.works);
+            renderReviews(data.reviews);
+        } catch(e) { console.error(e); }
+    }
+
+    function renderWorks(works) {
+        const container = document.getElementById('works-list');
+        if (!works.length) {
+            container.innerHTML = '<div class="empty-message">Пока нет работ. Добавьте первую!</div>';
+            return;
+        }
+        container.innerHTML = works.map(w => `
+            <div class="work-item" data-id="${w.id}">
+                <div class="work-title">${escapeHtml(w.title)}</div>
+                <div>${escapeHtml(w.description)}</div>
+                ${w.image_url ? `<img src="${w.image_url}" class="work-image" loading="lazy">` : ''}
+                ${currentUser && currentUser.id === ADMIN_ID ? `<button class="delete-work" data-id="${w.id}">🗑️</button>` : ''}
+            </div>
+        `).join('');
+        // Вешаем обработчики удаления
+        if (currentUser && currentUser.id === ADMIN_ID) {
+            document.querySelectorAll('.delete-work').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const workId = btn.dataset.id;
+                    if (confirm('Удалить работу?')) {
+                        await fetch('/api/delete_work', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({work_id: workId, user_id: currentUser.id})
+                        });
+                        loadData();
+                    }
+                });
+            });
+        }
+    }
+
+    function renderReviews(reviews) {
+        const container = document.getElementById('reviews-list');
+        if (!reviews.length) {
+            container.innerHTML = '<div class="empty-message">Отзывов пока нет. Будьте первым!</div>';
+            return;
+        }
+        container.innerHTML = reviews.map(r => `
+            <div class="review-item">
+                <div class="review-author">${escapeHtml(r.author)}</div>
+                <div class="review-rating">${'⭐'.repeat(r.rating)}</div>
+                <div class="review-text">${escapeHtml(r.text)}</div>
+            </div>
+        `).join('');
+    }
+
+    // --- Редактирование "Обо мне" (только админ) ---
+    document.getElementById('edit-about-btn')?.addEventListener('click', async () => {
+        const currentText = document.getElementById('about-text').innerText;
+        const newText = prompt('Введите новый текст "О себе":', currentText);
+        if (newText && newText !== currentText) {
+            await fetch('/api/update_about', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({about: newText, user_id: currentUser.id})
+            });
+            loadData();
+        }
+    });
+
+    // --- Добавление работы (только админ) ---
+    document.getElementById('add-work-btn')?.addEventListener('click', () => {
+        const title = prompt('Название работы');
+        if (!title) return;
+        const desc = prompt('Описание');
+        if (!desc) return;
+        const img = prompt('Ссылка на изображение (можно оставить пустым)');
+        fetch('/api/add_work', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({title, description: desc, image_url: img || '', user_id: currentUser.id})
+        }).then(() => loadData());
+    });
+
+    // --- Отзывы: открыть попап ---
+    let reviewPopup = null;
+    function openReviewPopup() {
+        if (reviewPopup) return;
+        const overlay = document.createElement('div');
+        overlay.className = 'popup-overlay';
+        overlay.innerHTML = `
+            <div class="popup-content">
+                <h3>Оставить отзыв</h3>
+                <input type="text" id="review-name" placeholder="Ваше имя" required>
+                <select id="review-rating">
+                    <option value="5">⭐⭐⭐⭐⭐ 5</option>
+                    <option value="4">⭐⭐⭐⭐ 4</option>
+                    <option value="3">⭐⭐⭐ 3</option>
+                    <option value="2">⭐⭐ 2</option>
+                    <option value="1">⭐ 1</option>
+                </select>
+                <textarea id="review-text" rows="3" placeholder="Ваш отзыв..." required></textarea>
+                <div class="popup-buttons">
+                    <button class="popup-cancel" id="cancel-review">Отмена</button>
+                    <button class="popup-submit" id="submit-review">Отправить</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        reviewPopup = overlay;
+
+        document.getElementById('cancel-review').onclick = () => {
+            overlay.remove();
+            reviewPopup = null;
+        };
+        document.getElementById('submit-review').onclick = async () => {
+            const author = document.getElementById('review-name').value.trim();
+            const rating = parseInt(document.getElementById('review-rating').value);
+            const text = document.getElementById('review-text').value.trim();
+            if (!author || !text) {
+                tg.showAlert('Заполните имя и текст отзыва');
+                return;
+            }
+            await fetch('/api/add_review', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({author, rating, text})
+            });
+            overlay.remove();
+            reviewPopup = null;
+            loadData();
+            tg.showAlert('Спасибо за отзыв!');
+        };
+    }
+    document.getElementById('open-review-btn').addEventListener('click', openReviewPopup);
+
+    // --- Заказ услуги ---
+    document.getElementById('submit-order-btn').addEventListener('click', async () => {
+        const name = document.getElementById('order-name').value.trim();
+        const contact = document.getElementById('order-contact').value.trim();
+        const desc = document.getElementById('order-desc').value.trim();
+        const fileInput = document.getElementById('order-file');
+        const file = fileInput.files[0];
+
+        if (!name || !contact || !desc) {
+            tg.showAlert('Пожалуйста, заполните имя, контакт и описание');
+            return;
+        }
+
+        // Показываем индикатор загрузки
+        const btn = document.getElementById('submit-order-btn');
+        const originalText = btn.innerText;
+        btn.innerText = 'Отправка...';
+        btn.disabled = true;
+
+        try {
+            let fileUrl = '';
+            if (file) {
+                // Загружаем файл на сервер (можно через отдельный эндпоинт)
+                const formData = new FormData();
+                formData.append('file', file);
+                const uploadRes = await fetch('/api/upload_file', {
+                    method: 'POST',
+                    body: formData
+                });
+                const uploadData = await uploadRes.json();
+                if (uploadData.url) fileUrl = uploadData.url;
+                else throw new Error('Ошибка загрузки файла');
+            }
+
+            const orderData = {
+                name, contact, desc, file_url: fileUrl,
+                user_id: currentUser?.id || 0,
+                username: currentUser?.username || ''
+            };
+            const res = await fetch('/api/send_order', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(orderData)
+            });
+            if (res.ok) {
+                tg.showAlert('Заявка успешно отправлена! Мы свяжемся с вами.');
+                // Очистка формы
+                document.getElementById('order-name').value = '';
+                document.getElementById('order-contact').value = '';
+                document.getElementById('order-desc').value = '';
+                document.getElementById('order-file').value = '';
+            } else {
+                throw new Error();
+            }
+        } catch (err) {
+            tg.showAlert('Ошибка отправки. Попробуйте позже.');
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    });
+
+    // --- Настройки (шестерёнка) ---
+    document.getElementById('settings-btn').addEventListener('click', () => {
+        tg.showPopup({
+            title: 'Меню',
+            buttons: [
+                {id: 'exit', type: 'destructive', text: 'Выйти'},
+            
