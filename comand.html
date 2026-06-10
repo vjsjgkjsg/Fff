@@ -7,8 +7,8 @@
   <style>
     :root {
       --bg: #03000a;
-      --surface: rgba(15, 10, 35, 0.65);
-      --border: rgba(180, 130, 255, 0.25);
+      --surface: rgba(15, 10, 35, 0.7);
+      --border: rgba(180, 130, 255, 0.3);
       --primary: #b47aff;
       --secondary: #ff3b6f;
       --accent: #00e5ff;
@@ -57,11 +57,17 @@
     .logo {
       font-size: 1.7rem;
       font-weight: 900;
+      letter-spacing: -1px;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       filter: drop-shadow(0 0 8px rgba(180,130,255,0.4));
+      animation: logoPulse 3s infinite;
+    }
+    @keyframes logoPulse {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(180,130,255,0.4)); }
+      50% { filter: drop-shadow(0 0 16px rgba(255,59,111,0.8)); }
     }
     .nav-links a {
       color: var(--muted);
@@ -72,10 +78,6 @@
       transition: 0.3s;
       text-transform: uppercase;
     }
-    .nav-links a:active {
-      color: var(--secondary);
-      text-shadow: 0 0 8px var(--secondary);
-    }
 
     .page-title {
       font-size: 2.2rem;
@@ -85,7 +87,6 @@
       background: linear-gradient(to right, #fff, #ffb3c6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
       filter: drop-shadow(0 0 12px rgba(255,59,111,0.5));
       animation: glitchText 4s infinite;
     }
@@ -98,11 +99,12 @@
     .page-subtitle {
       color: var(--muted);
       margin-bottom: 28px;
-      font-size: 0.95rem;
+      font-size: 1rem;
       border-left: 4px solid var(--secondary);
       padding-left: 14px;
       background: linear-gradient(90deg, rgba(255,59,111,0.15), transparent);
       backdrop-filter: blur(5px);
+      font-style: italic;
     }
 
     .form-card {
@@ -133,8 +135,8 @@
       letter-spacing: 0.5px;
     }
     .form-group input,
-    .form-group textarea,
-    .form-group select {
+    .form-group select,
+    .form-group textarea {
       width: 100%;
       padding: 14px 16px;
       background: rgba(10,10,25,0.7);
@@ -147,8 +149,8 @@
       transition: all 0.3s;
     }
     .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
+    .form-group select:focus,
+    .form-group textarea:focus {
       border-color: var(--secondary);
       box-shadow: 0 0 0 3px rgba(255,59,111,0.2);
     }
@@ -229,14 +231,22 @@
       gap: 4px;
       transition: 0.3s;
       text-transform: uppercase;
+      position: relative;
     }
     .bottom-nav a.active {
       color: var(--secondary);
       text-shadow: 0 0 12px var(--secondary);
     }
-    .bottom-nav a .icon {
-      font-size: 1.4rem;
+    .bottom-nav a.active::after {
+      content: '';
+      position: absolute;
+      top: -6px;
+      width: 20px;
+      height: 3px;
+      background: var(--secondary);
+      border-radius: 2px;
     }
+    .bottom-nav a .icon { font-size: 1.3rem; }
   </style>
 </head>
 <body>
@@ -251,8 +261,8 @@
       </div>
     </nav>
 
-    <h1 class="page-title">В команду</h1>
-    <p class="page-subtitle">Ты пишешь код, который не должен видеть свет? Мы ищем именно тебя.</p>
+    <h1 class="page-title">ТЫ НУЖЕН СИСТЕМЕ</h1>
+    <p class="page-subtitle">Мы не ищем просто «кодеров». Нам нужны архитекторы реальности: дизайнеры, аналитики, маркетологи, безопасники, креативщики, организаторы. Если у тебя есть навык — мы найдём ему применение.</p>
 
     <div class="form-card" id="teamForm">
       <div class="form-group">
@@ -260,22 +270,22 @@
         <input type="text" id="tgNick" placeholder="@username" required>
       </div>
       <div class="form-group">
-        <label>Специализация</label>
-        <select id="specialty" required>
-          <option value="" disabled selected>— Что ты умеешь? —</option>
-          <option>Python / Backend</option>
-          <option>JavaScript / Frontend</option>
-          <option>Telegram Bot API (Aiogram / Telethon)</option>
-          <option>Парсинг (Scrapy, Selenium, Requests)</option>
-          <option>DevOps / VPS / Docker</option>
-          <option>Дизайн (Figma, UI/UX)</option>
-          <option>Reverse Engineering</option>
-          <option>Другое</option>
+        <label>Кем ты можешь быть в команде?</label>
+        <select id="role" required>
+          <option value="" disabled selected>— Выбери своё направление —</option>
+          <option>Разработчик (Python, JS, C++, etc.)</option>
+          <option>Дизайнер (UI/UX, графика, айдентика)</option>
+          <option>Маркетолог / Таргетолог</option>
+          <option>Аналитик данных</option>
+          <option>Специалист по безопасности / OSINT</option>
+          <option>Копирайтер / Сценарист</option>
+          <option>Организатор / Проджект-менеджер</option>
+          <option>Другое — я уникален</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Опиши свои навыки и опыт (можно ссылки)</label>
-        <textarea id="skills" placeholder="Какие проекты ты уже делал? Что умеешь лучше всего? Если есть GitHub / портфолио — кинь сюда. Мы не осуждаем." required></textarea>
+        <label>Опиши свои навыки, опыт, примеры (если есть)</label>
+        <textarea id="skills" placeholder="Расскажи, что ты умеешь лучше всего. Если есть портфолио или ссылки — кидай сюда. Мы не осуждаем." required></textarea>
       </div>
       <div class="form-group">
         <label>Готов работать анонимно и без лишних вопросов?</label>
@@ -285,7 +295,7 @@
           <option>Готов обсуждать детали</option>
         </select>
       </div>
-      <button class="btn-submit" onclick="handleTeamSubmit()">Оставить заявку</button>
+      <button class="btn-submit" onclick="handleTeamSubmit()">ОСТАВИТЬ ЗАЯВКУ</button>
     </div>
 
     <div class="success-msg" id="successMsg">
@@ -314,9 +324,7 @@
       resize();
 
       class Particle {
-        constructor() {
-          this.reset();
-        }
+        constructor() { this.reset(); }
         reset() {
           this.x = Math.random() * canvas.width;
           this.y = Math.random() * canvas.height;
@@ -347,10 +355,7 @@
 
       function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-          p.update();
-          p.draw();
-        });
+        particles.forEach(p => { p.update(); p.draw(); });
         requestAnimationFrame(animate);
       }
       animate();
@@ -358,16 +363,16 @@
 
     function handleTeamSubmit() {
       const tg = document.getElementById('tgNick').value.trim();
-      const spec = document.getElementById('specialty').value;
+      const role = document.getElementById('role').value;
       const skills = document.getElementById('skills').value.trim();
       const anon = document.getElementById('anon').value;
-      if (!tg || !spec || !skills || !anon) {
-        alert('Заполни все поля. Мы должны знать, с кем работаем.');
+      if (!tg || !role || !skills || !anon) {
+        alert('Заполни все поля. Мы должны знать, с кем имеем дело.');
         return;
       }
       document.getElementById('teamForm').style.display = 'none';
       document.getElementById('successMsg').style.display = 'block';
-      console.log({ tg, spec, skills, anon });
+      console.log({ tg, role, skills, anon });
     }
   </script>
 </body>
